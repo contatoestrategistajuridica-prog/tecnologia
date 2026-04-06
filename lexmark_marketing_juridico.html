@@ -1,0 +1,571 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0f;color:#d4d0c8;font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh}
+.app{display:flex;min-height:100vh}
+.sidebar{width:230px;background:#12121a;border-right:1px solid rgba(201,168,76,.2);display:flex;flex-direction:column;flex-shrink:0}
+.logo{padding:20px 16px 14px;border-bottom:1px solid rgba(201,168,76,.2)}
+.logo-icon{width:32px;height:32px;background:linear-gradient(135deg,#c9a84c,#e8c96d);border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;vertical-align:middle;margin-right:9px}
+.logo-text{font-family:Georgia,serif;font-size:17px;font-weight:700;color:#e8e4d9;display:inline-block;vertical-align:middle}
+.logo-sub{font-size:9px;color:#c9a84c;letter-spacing:.15em;text-transform:uppercase;margin-top:2px;padding-left:41px}
+.nav-section{font-size:9px;color:#6b6b80;letter-spacing:.15em;text-transform:uppercase;padding:12px 14px 5px}
+.nav-item{display:flex;align-items:center;gap:7px;padding:8px 12px;border-radius:7px;cursor:pointer;color:#6b6b80;font-size:12.5px;margin-bottom:1px;border:1px solid transparent;transition:all .15s;user-select:none}
+.nav-item:hover{background:rgba(201,168,76,.08);color:#d4d0c8}
+.nav-item.active{background:rgba(201,168,76,.12);color:#c9a84c;border-color:rgba(201,168,76,.22)}
+.sidebar-footer{padding:12px;border-top:1px solid rgba(201,168,76,.2);margin-top:auto}
+.plan-box{background:linear-gradient(135deg,#1a1a10,#2a2510);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:11px 13px}
+.plan-name{color:#c9a84c;font-weight:600;font-size:12px}
+.plan-desc{color:#6b6b80;font-size:10px;margin-top:1px}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{padding:13px 24px;border-bottom:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,15,.95);position:sticky;top:0;z-index:50}
+.page-title{font-family:Georgia,serif;font-size:18px;color:#e8e4d9;font-weight:400}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#27ae60;display:inline-block;margin-right:5px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.btn-gold{background:linear-gradient(135deg,#c9a84c,#e8c96d);color:#0a0a0f;border:none;border-radius:8px;padding:10px 18px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:opacity .15s}
+.btn-gold:hover{opacity:.88}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed}
+.btn-outline{background:transparent;border:1px solid rgba(201,168,76,.25);color:#6b6b80;border-radius:7px;padding:6px 13px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-outline:hover{border-color:rgba(201,168,76,.6);color:#c9a84c}
+.content{padding:22px 24px;flex:1}
+.panel{display:none}.panel.active{display:block}
+.section-title{font-family:Georgia,serif;font-size:19px;color:#e8e4d9;font-weight:400;margin-bottom:16px}
+.section-title em{color:#c9a84c;font-style:italic}
+.card{background:#12121a;border:1px solid rgba(201,168,76,.2);border-radius:11px;padding:20px;margin-bottom:14px}
+.card-title{font-family:Georgia,serif;font-size:14px;color:#e8e4d9;margin-bottom:13px;padding-bottom:10px;border-bottom:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:space-between}
+.badge{font-size:10px;background:rgba(201,168,76,.1);color:#c9a84c;border:1px solid rgba(201,168,76,.2);border-radius:20px;padding:2px 9px;font-family:sans-serif;font-weight:400}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+.field label{font-size:10px;color:#6b6b80;text-transform:uppercase;letter-spacing:.1em}
+.field input,.field select,.field textarea{background:#1a1a26;border:1px solid rgba(201,168,76,.2);border-radius:7px;color:#d4d0c8;padding:8px 11px;font-family:inherit;font-size:13px;outline:none;width:100%;transition:border-color .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(201,168,76,.6)}
+.field select option{background:#1a1a26}
+.field textarea{min-height:70px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:6px 13px;border-radius:20px;font-size:12px;cursor:pointer;user-select:none;transition:all .15s;border:1px solid rgba(201,168,76,.2);color:#6b6b80;background:transparent}
+.chip:hover,.chip.active{border-color:rgba(201,168,76,.6);color:#c9a84c;background:rgba(201,168,76,.1)}
+.intro-box{background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(74,124,158,.06));border:1px solid rgba(201,168,76,.2);border-radius:11px;padding:20px 24px;margin-bottom:18px;display:flex;gap:16px;align-items:flex-start}
+.intro-icon{font-size:30px;flex-shrink:0}
+.intro-box h2{font-family:Georgia,serif;font-size:17px;color:#e8e4d9;margin-bottom:4px}
+.intro-box p{color:#6b6b80;font-size:12.5px;line-height:1.6}
+.result-body{font-size:13px;line-height:1.75;color:#d4d0c8;white-space:pre-wrap}
+.result-body strong{color:#c9a84c}
+.loading{display:flex;align-items:center;gap:10px;padding:16px;color:#6b6b80;font-size:13px}
+.dots span{width:6px;height:6px;border-radius:50%;background:#c9a84c;display:inline-block;animation:bounce 1.2s ease-in-out infinite;margin-right:4px}
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.strat-card{background:#12121a;border:1px solid rgba(201,168,76,.2);border-radius:11px;padding:20px;cursor:pointer;transition:all .2s}
+.strat-card:hover{border-color:rgba(201,168,76,.6);transform:translateY(-2px)}
+.metric-card{background:#12121a;border:1px solid rgba(201,168,76,.2);border-radius:11px;padding:18px;position:relative;overflow:hidden;transition:border-color .2s}
+.metric-card:hover{border-color:rgba(201,168,76,.5)}
+.metric-label{font-size:10px;color:#6b6b80;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.metric-value{font-size:24px;font-weight:600;color:#e8e4d9;font-family:monospace}
+.metric-change{font-size:11px;color:#27ae60;margin-top:3px}
+.metric-icon{position:absolute;top:14px;right:14px;font-size:20px;opacity:.45}
+.news-card{background:#1a1a26;border:1px solid rgba(201,168,76,.18);border-radius:10px;padding:15px 17px;margin-bottom:11px}
+.news-title{font-family:Georgia,serif;font-size:14.5px;color:#e8e4d9;margin-bottom:5px;line-height:1.4}
+.news-summary{font-size:12px;color:#6b6b80;line-height:1.65}
+.news-idea{margin-top:9px;padding:9px 13px;background:rgba(201,168,76,.07);border-radius:7px;border:1px solid rgba(201,168,76,.18);font-size:12px;color:#d4d0c8}
+.news-idea-label{font-size:9px;color:#c9a84c;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.cal-row{display:grid;grid-template-columns:80px 75px 1fr 120px 55px;gap:10px;align-items:center;padding:9px 13px;background:#1a1a26;border-radius:8px;border:1px solid rgba(201,168,76,.15);margin-bottom:7px}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.tag-reel{background:rgba(74,124,158,.15);color:#6fafc8;border:1px solid rgba(74,124,158,.3)}
+.tag-feed{background:rgba(201,168,76,.1);color:#c9a84c;border:1px solid rgba(201,168,76,.25)}
+.tag-story{background:rgba(231,76,60,.1);color:#e74c3c;border:1px solid rgba(231,76,60,.25)}
+.tag-carrossel{background:rgba(39,174,96,.1);color:#2ecc71;border:1px solid rgba(39,174,96,.25)}
+.post-piece{background:#1a1a26;border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:16px 18px;margin-bottom:13px}
+.idea-chip{flex-shrink:0;background:#1a1a26;border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:9px 13px;font-size:12px;cursor:pointer;transition:all .2s;min-width:145px}
+.idea-chip:hover{border-color:rgba(201,168,76,.6);background:rgba(201,168,76,.08)}
+.idea-chip-fmt{font-size:9px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.idea-chip-title{color:#e8e4d9;font-size:12px;line-height:1.3}
+.gen-layout{display:grid;grid-template-columns:280px 1fr;gap:20px}
+.gen-output{background:#12121a;border:1px solid rgba(201,168,76,.2);border-radius:11px;display:flex;flex-direction:column;min-height:460px}
+.gen-out-header{padding:14px 18px;border-bottom:1px solid rgba(201,168,76,.2);display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#6b6b80}
+.gen-out-body{padding:20px;flex:1;overflow-y:auto;font-size:13px;line-height:1.7;color:#d4d0c8}
+.placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#6b6b80;text-align:center;gap:10px;padding:40px}
+.placeholder-icon{font-size:36px;opacity:.35}
+.placeholder-text{font-size:12.5px;line-height:1.55;max-width:250px}
+.metrics-input-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:16px}
+.metric-input-card{background:#12121a;border:1px solid rgba(201,168,76,.2);border-radius:10px;padding:16px}
+.metric-input-card label{display:block;font-size:10px;color:#6b6b80;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
+.metric-input-card input{background:#1a1a26;border:1px solid rgba(201,168,76,.2);border-radius:6px;color:#d4d0c8;padding:9px;font-family:monospace;font-size:15px;font-weight:600;width:100%;outline:none}
+.metric-input-card input:focus{border-color:rgba(201,168,76,.6)}
+.metric-hint{font-size:10px;color:#6b6b80;margin-top:5px}
+.platform-toggle{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.platform-btn{padding:8px 15px;border-radius:8px;border:1px solid rgba(201,168,76,.2);cursor:pointer;font-size:12px;color:#6b6b80;transition:all .15s;user-select:none;display:flex;align-items:center;gap:6px}
+.platform-btn:hover,.platform-btn.active{border-color:rgba(201,168,76,.6);color:#c9a84c;background:rgba(201,168,76,.1)}
+.area-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:16px}
+.area-btn{background:#12121a;border:1px solid rgba(201,168,76,.2);border-radius:9px;padding:11px 8px;cursor:pointer;text-align:center;transition:all .15s;user-select:none}
+.area-btn:hover,.area-btn.active{border-color:#c9a84c;background:rgba(201,168,76,.08)}
+.area-btn .area-icon{font-size:18px;display:block;margin-bottom:4px}
+.area-btn .area-name{font-size:11px;color:#6b6b80;line-height:1.3}
+.area-btn.active .area-name{color:#c9a84c}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo">
+    <div><span class="logo-icon">⚖️</span><span class="logo-text">LexMark</span></div>
+    <div class="logo-sub">Marketing Jurídico</div>
+  </div>
+  <nav style="padding:10px 8px;flex:1;overflow-y:auto">
+    <div class="nav-section">Visão Geral</div>
+    <div class="nav-item active" onclick="nav('dashboard')"><span>📊</span> Dashboard</div>
+    <div class="nav-item" onclick="nav('analise')"><span>🔍</span> Análise de Métricas</div>
+    <div class="nav-section">Conteúdo</div>
+    <div class="nav-item" onclick="nav('gerador')"><span>✨</span> Gerador de Conteúdo</div>
+    <div class="nav-item" onclick="nav('roteiro')"><span>🎬</span> Roteiro para Reels</div>
+    <div class="nav-item" onclick="nav('massa')"><span>🚀</span> Geração em Massa</div>
+    <div class="nav-section">Estratégia</div>
+    <div class="nav-item" onclick="nav('estrategia')"><span>🎯</span> Estratégia de Crescimento</div>
+    <div class="nav-item" onclick="nav('publico')"><span>👥</span> Público-Alvo</div>
+    <div class="nav-item" onclick="nav('calendario')"><span>📅</span> Calendário Editorial</div>
+    <div class="nav-section">Avançado</div>
+    <div class="nav-item" onclick="nav('redesocial')"><span>📱</span> Análise de Redes Sociais</div>
+    <div class="nav-item" onclick="nav('trafego')"><span>📣</span> Tráfego Pago</div>
+    <div class="nav-item" onclick="nav('noticias')"><span>📰</span> Notícias Jurídicas</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="plan-box"><div class="plan-name">⚡ Plano Elite</div><div class="plan-desc">Geração ilimitada de conteúdo</div></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="page-title" id="pageTitle">Dashboard Executivo</div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <span style="font-size:12px;color:#6b6b80"><span class="live-dot"></span>IA Conectada</span>
+      <button class="btn-gold" onclick="nav('gerador')">+ Criar Conteúdo</button>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="grid4" style="margin-bottom:18px">
+        <div class="metric-card"><div class="metric-label">Seguidores</div><div class="metric-value">12.4k</div><div class="metric-change">↑ +847 este mês</div><div class="metric-icon">👥</div></div>
+        <div class="metric-card"><div class="metric-label">Engajamento</div><div class="metric-value">6.8%</div><div class="metric-change">↑ +1.2% vs anterior</div><div class="metric-icon">💬</div></div>
+        <div class="metric-card"><div class="metric-label">Alcance Mensal</div><div class="metric-value">89.3k</div><div class="metric-change">↑ +22% vs anterior</div><div class="metric-icon">📡</div></div>
+        <div class="metric-card"><div class="metric-label">Conteúdos Gerados</div><div class="metric-value">247</div><div class="metric-change">↑ +38 esta semana</div><div class="metric-icon">📄</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Ideias de Conteúdo para Hoje <span class="badge">5 sugestões</span></div>
+        <div style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px">
+          <div class="idea-chip" onclick="nav('gerador')"><div class="idea-chip-fmt" style="color:#4a7c9e">Reel</div><div class="idea-chip-title">5 direitos trabalhistas que seu chefe não quer que você saiba</div></div>
+          <div class="idea-chip" onclick="nav('gerador')"><div class="idea-chip-fmt" style="color:#27ae60">Carrossel</div><div class="idea-chip-title">Guia completo: o que fazer quando te demitem</div></div>
+          <div class="idea-chip" onclick="nav('gerador')"><div class="idea-chip-fmt" style="color:#c9a84c">Feed</div><div class="idea-chip-title">Mito ou verdade: rescisão por justa causa</div></div>
+          <div class="idea-chip" onclick="nav('gerador')"><div class="idea-chip-fmt" style="color:#e74c3c">Story</div><div class="idea-chip-title">Você conhece seus direitos trabalhistas?</div></div>
+          <div class="idea-chip" onclick="nav('gerador')"><div class="idea-chip-fmt" style="color:#4a7c9e">Reel</div><div class="idea-chip-title">Pensão alimentícia em 60 segundos</div></div>
+        </div>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,rgba(201,168,76,.05),rgba(74,124,158,.05))">
+        <div class="card-title">Acesso Rápido</div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap">
+          <button class="btn-outline" style="color:#c9a84c;border-color:rgba(201,168,76,.3);font-size:13px;padding:9px 15px" onclick="nav('gerador')">✨ Gerar Conteúdo</button>
+          <button class="btn-outline" style="color:#c9a84c;border-color:rgba(201,168,76,.3);font-size:13px;padding:9px 15px" onclick="nav('redesocial')">📱 Analisar Redes</button>
+          <button class="btn-outline" style="color:#c9a84c;border-color:rgba(201,168,76,.3);font-size:13px;padding:9px 15px" onclick="nav('trafego')">📣 Tráfego Pago</button>
+          <button class="btn-outline" style="color:#c9a84c;border-color:rgba(201,168,76,.3);font-size:13px;padding:9px 15px" onclick="nav('noticias')">📰 Notícias Jurídicas</button>
+          <button class="btn-outline" style="color:#c9a84c;border-color:rgba(201,168,76,.3);font-size:13px;padding:9px 15px" onclick="nav('calendario')">📅 Calendário</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GERADOR -->
+    <div class="panel" id="panel-gerador">
+      <div class="section-title">Gerador de <em>Conteúdo</em></div>
+      <div class="gen-layout">
+        <div class="card" style="margin-bottom:0">
+          <div class="field"><label>Área do Direito</label><select id="gArea"><option>Direito Trabalhista</option><option>Direito de Família</option><option>Direito do Consumidor</option><option>Direito Penal</option><option>Direito Civil</option><option>Direito Empresarial</option><option>Previdenciário</option><option>Direito Tributário</option><option>Direito Imobiliário</option></select></div>
+          <div class="field"><label>Formato</label><select id="gFormato"><option value="feed">Carrossel Educativo</option><option value="story">Story Sequência</option><option value="legenda">Legenda Foto/Vídeo</option><option value="dica">Dica Rápida</option><option value="mito">Mito vs Verdade</option><option value="lista">Lista com Dados</option><option value="cta">Post com CTA Forte</option><option value="curiosidade">Curiosidade Jurídica</option></select></div>
+          <div class="field"><label>Tema / Assunto</label><input id="gTema" placeholder="Ex: rescisão indireta, guarda compartilhada..."/></div>
+          <div class="field"><label>Tom de Voz</label>
+            <div class="chip-row" id="toneChips">
+              <span class="chip active" onclick="setTom(this)">Educativo</span>
+              <span class="chip" onclick="setTom(this)">Empático</span>
+              <span class="chip" onclick="setTom(this)">Autoridade</span>
+              <span class="chip" onclick="setTom(this)">Urgente</span>
+              <span class="chip" onclick="setTom(this)">Inspirador</span>
+              <span class="chip" onclick="setTom(this)">Direto</span>
+            </div>
+          </div>
+          <div class="field"><label>Público-alvo</label><input id="gPublico" placeholder="Ex: trabalhadores CLT, empreendedores..."/></div>
+          <button class="btn-gold" onclick="gerarConteudo()" id="btnGerar" style="width:100%;justify-content:center"><span>✨</span> Gerar com IA</button>
+        </div>
+        <div class="gen-output">
+          <div class="gen-out-header"><span>Resultado</span><div style="display:flex;gap:7px"><button class="btn-outline" id="btnCopyGen" style="display:none" onclick="copiar('genBody')">📋 Copiar</button><button class="btn-outline" id="btnRegen" style="display:none" onclick="gerarConteudo()">🔄 Regerar</button></div></div>
+          <div class="gen-out-body" id="genBody"><div class="placeholder"><div class="placeholder-icon">⚖️</div><div class="placeholder-text">Configure os parâmetros e clique em Gerar com IA</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROTEIRO -->
+    <div class="panel" id="panel-roteiro">
+      <div class="section-title">Roteiro para <em>Reels</em></div>
+      <div class="gen-layout">
+        <div class="card" style="margin-bottom:0">
+          <div class="field"><label>Área</label><select id="rArea"><option>Direito Trabalhista</option><option>Direito de Família</option><option>Direito do Consumidor</option><option>Direito Penal</option><option>Direito Civil</option><option>Direito Empresarial</option><option>Previdenciário</option></select></div>
+          <div class="field"><label>Tema do Vídeo</label><input id="rTema" placeholder="Ex: 5 erros que podem te fazer perder seu processo"/></div>
+          <div class="field"><label>Duração</label><select id="rDuracao"><option value="15">15s – Gancho Rápido</option><option value="30">30s – Didático</option><option value="60" selected>60s – Completo</option><option value="90">90s – Aprofundado</option></select></div>
+          <div class="field"><label>Estilo</label><select id="rEstilo"><option>Talking head (falando para câmera)</option><option>Narração com imagens/texto</option><option>Storytelling com caso real</option><option>Lista com revelações progressivas</option><option>Pergunta polêmica + resposta</option></select></div>
+          <div class="field"><label>CTA Final</label><select id="rCta"><option>Consulte um advogado</option><option>Salva esse vídeo</option><option>Manda pra quem precisa</option><option>Comenta sua dúvida</option><option>Me chama no direct</option></select></div>
+          <button class="btn-gold" onclick="gerarRoteiro()" style="width:100%;justify-content:center"><span>🎬</span> Gerar Roteiro</button>
+        </div>
+        <div class="gen-output">
+          <div class="gen-out-header"><span>Roteiro Gerado</span><button class="btn-outline" id="btnCopyRot" style="display:none" onclick="copiar('rotBody')">📋 Copiar</button></div>
+          <div class="gen-out-body" id="rotBody"><div class="placeholder"><div class="placeholder-icon">🎬</div><div class="placeholder-text">Preencha os campos e gere um roteiro pronto para gravar</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MASSA -->
+    <div class="panel" id="panel-massa">
+      <div class="section-title">Geração em <em>Massa</em></div>
+      <div class="intro-box"><div class="intro-icon">🚀</div><div><h2>Produza semanas de conteúdo em minutos</h2><p>Defina a área, a quantidade e o formato. A IA cria múltiplas peças prontas para agendar.</p></div></div>
+      <div class="card">
+        <div class="card-title">Configurar Lote</div>
+        <div class="grid3">
+          <div class="field"><label>Área Principal</label><select id="mArea"><option>Direito Trabalhista</option><option>Direito de Família</option><option>Direito do Consumidor</option><option>Direito Penal</option><option>Direito Empresarial</option><option>Mix de Áreas</option></select></div>
+          <div class="field"><label>Quantidade</label><select id="mQtd"><option value="3">3 posts (3 dias)</option><option value="5" selected>5 posts (1 semana)</option><option value="10">10 posts (2 semanas)</option></select></div>
+          <div class="field"><label>Formatos</label><select id="mFmt"><option>Todos os formatos</option><option>Somente Feed</option><option>Somente Stories</option><option>Feed + Reel</option></select></div>
+        </div>
+        <button class="btn-gold" onclick="gerarMassa()"><span>🚀</span> Gerar Lote com IA</button>
+      </div>
+      <div id="massaOut"></div>
+    </div>
+
+    <!-- ANALISE -->
+    <div class="panel" id="panel-analise">
+      <div class="section-title">Análise de <em>Métricas</em></div>
+      <div class="intro-box"><div class="intro-icon">🔍</div><div><h2>Diagnóstico Estratégico com IA</h2><p>Insira seus números reais e receba análise profunda com recomendações personalizadas.</p></div></div>
+      <div class="metrics-input-grid">
+        <div class="metric-input-card"><label>Seguidores atuais</label><input type="number" id="aS" placeholder="3200"/><div class="metric-hint">Total de seguidores hoje</div></div>
+        <div class="metric-input-card"><label>Crescimento mensal (%)</label><input type="number" id="aC" placeholder="5.2" step="0.1"/><div class="metric-hint">% de crescimento mensal</div></div>
+        <div class="metric-input-card"><label>Taxa de engajamento (%)</label><input type="number" id="aE" placeholder="3.5" step="0.1"/><div class="metric-hint">Likes + comentários / seguidores</div></div>
+        <div class="metric-input-card"><label>Posts por semana</label><input type="number" id="aP" placeholder="3"/><div class="metric-hint">Frequência semanal</div></div>
+        <div class="metric-input-card"><label>Alcance médio por post</label><input type="number" id="aA" placeholder="850"/><div class="metric-hint">Pessoas alcançadas</div></div>
+        <div class="metric-input-card"><label>Área de atuação</label><input type="text" id="aArea" placeholder="Ex: Trabalhista"/><div class="metric-hint">Especialidade principal</div></div>
+      </div>
+      <button class="btn-gold" onclick="analisarMetricas()" style="margin-bottom:18px"><span>🔍</span> Analisar com IA</button>
+      <div id="analiseOut"></div>
+    </div>
+
+    <!-- ESTRATEGIA -->
+    <div class="panel" id="panel-estrategia">
+      <div class="section-title">Estratégia de <em>Crescimento</em></div>
+      <div class="field" style="max-width:450px;margin-bottom:20px"><label>Para qual perfil deseja a estratégia?</label><input id="ePerfil" placeholder="Ex: advogado trabalhista, OAB/MG, 500 seguidores"/></div>
+      <div class="grid2" style="max-width:680px;margin-bottom:18px">
+        <div class="strat-card" onclick="gerarEstrategia('crescimento')"><div style="font-size:24px;margin-bottom:9px">📈</div><div style="font-family:Georgia,serif;font-size:14px;color:#e8e4d9;margin-bottom:5px">Plano de Crescimento</div><div style="font-size:12px;color:#6b6b80;line-height:1.55">Estratégia mês a mês para dobrar seguidores com consistência e autoridade.</div></div>
+        <div class="strat-card" onclick="gerarEstrategia('engajamento')"><div style="font-size:24px;margin-bottom:9px">💬</div><div style="font-family:Georgia,serif;font-size:14px;color:#e8e4d9;margin-bottom:5px">Aumento de Engajamento</div><div style="font-size:12px;color:#6b6b80;line-height:1.55">Táticas para aumentar comentários, salvamentos e compartilhamentos.</div></div>
+        <div class="strat-card" onclick="gerarEstrategia('autoridade')"><div style="font-size:24px;margin-bottom:9px">⚖️</div><div style="font-family:Georgia,serif;font-size:14px;color:#e8e4d9;margin-bottom:5px">Posicionamento como Referência</div><div style="font-size:12px;color:#6b6b80;line-height:1.55">Tornar-se o advogado de referência na sua especialidade nas redes.</div></div>
+        <div class="strat-card" onclick="gerarEstrategia('captacao')"><div style="font-size:24px;margin-bottom:9px">🎯</div><div style="font-family:Georgia,serif;font-size:14px;color:#e8e4d9;margin-bottom:5px">Captação via Instagram</div><div style="font-size:12px;color:#6b6b80;line-height:1.55">Funil de conteúdo para converter seguidores em clientes pagantes.</div></div>
+      </div>
+      <div id="estrategiaOut"></div>
+    </div>
+
+    <!-- PUBLICO -->
+    <div class="panel" id="panel-publico">
+      <div class="section-title">Análise de <em>Público-Alvo</em></div>
+      <div class="card" style="max-width:520px">
+        <div class="card-title">Definir Perfil do Escritório</div>
+        <div class="field"><label>Área de atuação</label><select id="pArea"><option>Direito Trabalhista</option><option>Direito de Família</option><option>Direito do Consumidor</option><option>Direito Penal</option><option>Direito Empresarial</option><option>Direito Civil Geral</option></select></div>
+        <div class="field"><label>Cidade / Região</label><input id="pCidade" placeholder="Ex: Montes Claros MG, interior de MG..."/></div>
+        <button class="btn-gold" onclick="analisarPublico()"><span>👥</span> Analisar com IA</button>
+      </div>
+      <div id="publicoOut" style="margin-top:16px"></div>
+    </div>
+
+    <!-- CALENDARIO -->
+    <div class="panel" id="panel-calendario">
+      <div class="section-title">Calendário <em>Editorial</em></div>
+      <div class="card" style="max-width:480px">
+        <div class="card-title">Gerar com IA</div>
+        <div class="grid2">
+          <div class="field"><label>Área</label><select id="cArea"><option>Direito Trabalhista</option><option>Direito de Família</option><option>Direito do Consumidor</option><option>Direito Penal</option><option>Direito Empresarial</option><option>Mix de Áreas</option></select></div>
+          <div class="field"><label>Período</label><select id="cPeriodo"><option value="semana">1 semana (7 dias)</option><option value="quinzena">Quinzena (15 dias)</option><option value="mes" selected>1 mês (30 dias)</option></select></div>
+        </div>
+        <button class="btn-gold" onclick="gerarCalendario()"><span>📅</span> Gerar Calendário</button>
+      </div>
+      <div id="calOut" style="margin-top:16px"></div>
+    </div>
+
+    <!-- REDES SOCIAIS -->
+    <div class="panel" id="panel-redesocial">
+      <div class="section-title">Análise de <em>Redes Sociais</em></div>
+      <div class="intro-box"><div class="intro-icon">📱</div><div><h2>Diagnóstico Multicanal com IA</h2><p>Analise a presença do seu escritório em todas as redes e receba planos de ação personalizados para cada plataforma.</p></div></div>
+      <div class="card">
+        <div class="card-title">Plataforma para Analisar</div>
+        <div class="platform-toggle" id="platTabs">
+          <div class="platform-btn active" onclick="selPlat(this,'instagram')">📸 Instagram</div>
+          <div class="platform-btn" onclick="selPlat(this,'facebook')">👍 Facebook</div>
+          <div class="platform-btn" onclick="selPlat(this,'linkedin')">💼 LinkedIn</div>
+          <div class="platform-btn" onclick="selPlat(this,'tiktok')">🎵 TikTok</div>
+          <div class="platform-btn" onclick="selPlat(this,'todos')">🌐 Todos</div>
+        </div>
+        <div class="grid3">
+          <div class="field"><label>Área do Direito</label><select id="rsArea"><option>Direito Trabalhista</option><option>Direito de Família</option><option>Direito do Consumidor</option><option>Direito Penal</option><option>Direito Empresarial</option><option>Direito Civil</option><option>Direito Tributário</option><option>Previdenciário</option></select></div>
+          <div class="field"><label>Seguidores / Conexões</label><input type="number" id="rsSeg" placeholder="Ex: 2500"/></div>
+          <div class="field"><label>Engajamento (%)</label><input type="number" id="rsEng" placeholder="Ex: 3.5" step="0.1"/></div>
+          <div class="field"><label>Frequência de Posts</label><select id="rsFreq"><option>Diário</option><option>3-4x por semana</option><option>2x por semana</option><option>1x por semana</option><option>Irregular / Raro</option></select></div>
+          <div class="field"><label>Tipo de Conteúdo Atual</label><select id="rsCont"><option>Só texto/imagem estática</option><option>Mix de fotos e vídeos</option><option>Principalmente Reels/Vídeos</option><option>Artigos e documentos</option><option>Sem padrão definido</option></select></div>
+          <div class="field"><label>Maior Dificuldade</label><select id="rsDif"><option>Crescer seguidores</option><option>Gerar engajamento</option><option>Converter em clientes</option><option>Consistência de posts</option><option>Ideia de conteúdo</option></select></div>
+        </div>
+        <div class="field"><label>Descreva sua situação atual (opcional)</label><textarea id="rsDesc" placeholder="Ex: Posto quando tenho tempo, sem estratégia definida..."></textarea></div>
+        <button class="btn-gold" onclick="analisarRedes()"><span>📱</span> Analisar e Propor Estratégia</button>
+      </div>
+      <div id="redesOut"></div>
+    </div>
+
+    <!-- TRAFEGO -->
+    <div class="panel" id="panel-trafego">
+      <div class="section-title">Campanhas de <em>Tráfego Pago</em></div>
+      <div class="intro-box"><div class="intro-icon">📣</div><div><h2>Configuração de Campanhas com IA</h2><p>Google Ads, Meta Ads, LinkedIn e TikTok. A IA gera toda estrutura, copy, segmentação e estratégia de lances.</p></div></div>
+      <div class="card">
+        <div class="card-title">Configurar Nova Campanha</div>
+        <div style="margin-bottom:14px"><label style="font-size:10px;color:#6b6b80;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Plataforma</label>
+        <div class="platform-toggle" id="trafegoPlats">
+          <div class="platform-btn active" onclick="selTrafPlat(this,'google')">🔍 Google Ads</div>
+          <div class="platform-btn" onclick="selTrafPlat(this,'meta')">📘 Meta Ads</div>
+          <div class="platform-btn" onclick="selTrafPlat(this,'linkedin')">💼 LinkedIn Ads</div>
+          <div class="platform-btn" onclick="selTrafPlat(this,'tiktok')">🎵 TikTok Ads</div>
+          <div class="platform-btn" onclick="selTrafPlat(this,'todas')">🌐 Todas</div>
+        </div></div>
+        <div class="grid3">
+          <div class="field"><label>Área do Direito</label><select id="tArea"><option>Direito Trabalhista</option><option>Direito de Família</option><option>Direito do Consumidor</option><option>Direito Penal</option><option>Direito Empresarial</option><option>Direito Civil</option><option>Previdenciário</option><option>Direito Imobiliário</option><option>Direito Tributário</option></select></div>
+          <div class="field"><label>Objetivo</label><select id="tObj"><option>Captar novos clientes (consultas)</option><option>Reconhecimento do escritório</option><option>Gerar leads qualificados</option><option>Promover evento/webinar</option><option>Remarketing</option></select></div>
+          <div class="field"><label>Orçamento Mensal (R$)</label><input type="number" id="tOrc" placeholder="Ex: 1500"/></div>
+          <div class="field"><label>Localização Alvo</label><input id="tLoc" placeholder="Ex: Montes Claros MG..."/></div>
+          <div class="field"><label>Público-Alvo</label><select id="tPub"><option>Pessoa Física (PF)</option><option>Pessoa Jurídica (PJ)</option><option>Ambos (PF e PJ)</option><option>Empresas de médio porte</option><option>Startups e MEI</option></select></div>
+          <div class="field"><label>Diferencial do Escritório</label><input id="tDif" placeholder="Ex: 15 anos de experiência, online..."/></div>
+        </div>
+        <div style="margin-bottom:14px"><label style="font-size:10px;color:#6b6b80;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:7px">Tipo de Campanha</label>
+        <div class="platform-toggle" id="tiposCamp">
+          <div class="platform-btn active" onclick="toggleTipo(this,'pesquisa')">🔍 Pesquisa</div>
+          <div class="platform-btn" onclick="toggleTipo(this,'display')">🖼️ Display</div>
+          <div class="platform-btn" onclick="toggleTipo(this,'social')">📱 Feed Social</div>
+          <div class="platform-btn" onclick="toggleTipo(this,'video')">🎬 Vídeo</div>
+        </div></div>
+        <button class="btn-gold" onclick="configurarCampanha()"><span>📣</span> Configurar com IA</button>
+      </div>
+      <div id="trafegoOut"></div>
+    </div>
+
+    <!-- NOTICIAS -->
+    <div class="panel" id="panel-noticias">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div class="section-title" style="margin-bottom:0">Notícias <em>Jurídicas</em></div>
+        <span style="font-size:12px;color:#6b6b80"><span class="live-dot"></span>Tempo real</span>
+      </div>
+      <div class="intro-box"><div class="intro-icon">📰</div><div><h2>Atualizações Jurídicas em Tempo Real</h2><p>Selecione uma área e receba notícias, decisões dos tribunais (STF, STJ, TST) e sugestões de conteúdo para suas redes.</p></div></div>
+      <div class="area-grid" id="newsAreas">
+        <div class="area-btn active" onclick="selArea(this,'Direito Trabalhista')"><span class="area-icon">⚒️</span><div class="area-name">Trabalhista</div></div>
+        <div class="area-btn" onclick="selArea(this,'Direito de Família')"><span class="area-icon">👨‍👩‍👧</span><div class="area-name">Família</div></div>
+        <div class="area-btn" onclick="selArea(this,'Direito do Consumidor')"><span class="area-icon">🛒</span><div class="area-name">Consumidor</div></div>
+        <div class="area-btn" onclick="selArea(this,'Direito Penal')"><span class="area-icon">⚖️</span><div class="area-name">Penal</div></div>
+        <div class="area-btn" onclick="selArea(this,'Direito Empresarial')"><span class="area-icon">🏢</span><div class="area-name">Empresarial</div></div>
+        <div class="area-btn" onclick="selArea(this,'Direito Tributário')"><span class="area-icon">💰</span><div class="area-name">Tributário</div></div>
+        <div class="area-btn" onclick="selArea(this,'Previdenciário')"><span class="area-icon">🏛️</span><div class="area-name">Previdenciário</div></div>
+        <div class="area-btn" onclick="selArea(this,'Direito Imobiliário')"><span class="area-icon">🏠</span><div class="area-name">Imobiliário</div></div>
+      </div>
+      <button class="btn-gold" onclick="buscarNoticias()" style="margin-bottom:18px"><span>🔍</span> Buscar Notícias</button>
+      <div id="noticiasOut"></div>
+    </div>
+
+  </div>
+</main>
+</div>
+
+<script>
+const API_URL="https://api.anthropic.com/v1/messages";
+const MODEL="claude-sonnet-4-6";
+let currentTom="Educativo";
+let currentPlat="instagram";
+let currentTrafPlat="google";
+let currentNewsArea="Direito Trabalhista";
+let tiposAtivos=new Set(["pesquisa"]);
+
+async function callClaude(sys,user,maxTok=1400){
+  const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:MODEL,max_tokens:maxTok,system:sys,messages:[{role:"user",content:user}]})});
+  const d=await r.json();
+  if(d.error)throw new Error(d.error.message);
+  return d.content.map(b=>b.text||"").join("");
+}
+
+function fmt(t){return t.replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").replace(/\n/g,"<br/>")}
+function loading(el,msg="A IA está gerando..."){el.innerHTML=`<div class="loading"><div class="dots"><span></span><span></span><span></span></div>${msg}</div>`}
+
+function nav(page){
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  const panel=document.getElementById("panel-"+page);
+  if(panel)panel.classList.add("active");
+  document.querySelectorAll(".nav-item").forEach(n=>{if(n.getAttribute("onclick")&&n.getAttribute("onclick").includes("'"+page+"'"))n.classList.add("active")});
+  const titles={dashboard:"Dashboard Executivo",analise:"Análise de Métricas",gerador:"Gerador de Conteúdo",roteiro:"Roteiro para Reels",massa:"Geração em Massa",estrategia:"Estratégia de Crescimento",publico:"Análise de Público-Alvo",calendario:"Calendário Editorial",redesocial:"Análise de Redes Sociais",trafego:"Tráfego Pago",noticias:"Notícias Jurídicas"};
+  document.getElementById("pageTitle").textContent=titles[page]||page;
+}
+
+function setTom(el){document.querySelectorAll("#toneChips .chip").forEach(c=>c.classList.remove("active"));el.classList.add("active");currentTom=el.textContent}
+function selPlat(el,p){document.querySelectorAll("#platTabs .platform-btn").forEach(b=>b.classList.remove("active"));el.classList.add("active");currentPlat=p}
+function selTrafPlat(el,p){document.querySelectorAll("#trafegoPlats .platform-btn").forEach(b=>b.classList.remove("active"));el.classList.add("active");currentTrafPlat=p}
+function selArea(el,a){document.querySelectorAll("#newsAreas .area-btn").forEach(b=>b.classList.remove("active"));el.classList.add("active");currentNewsArea=a}
+function toggleTipo(el,t){if(el.classList.contains("active")&&tiposAtivos.size>1){el.classList.remove("active");tiposAtivos.delete(t)}else{el.classList.add("active");tiposAtivos.add(t)}}
+
+function copiar(id){
+  const el=document.getElementById(id);
+  if(el)navigator.clipboard&&navigator.clipboard.writeText(el.innerText);
+}
+
+// GERADOR
+async function gerarConteudo(){
+  const area=document.getElementById("gArea").value;
+  const formato=document.getElementById("gFormato").value;
+  const tema=document.getElementById("gTema").value;
+  const publico=document.getElementById("gPublico").value;
+  const body=document.getElementById("genBody");
+  document.getElementById("btnCopyGen").style.display="none";
+  document.getElementById("btnRegen").style.display="none";
+  loading(body);
+  const fmtDescs={feed:"Carrossel educativo 5-7 slides com título impactante, tópicos por slide, legenda completa com hashtags",story:"Sequência 4-6 stories com texto curto e CTA interativo",legenda:"Legenda 300-500 palavras com abertura impactante e CTA forte",dica:"Dica rápida máx 200 palavras com título 'Você sabia que...'",mito:"3 mitos comuns derrubados com realidade jurídica",lista:"Lista com dados e números, 5 itens com explicação",cta:"Conteúdo educativo + convite direto para consulta (sem prometer resultado)",curiosidade:"Curiosidade jurídica surpreendente, tom didático"};
+  const sys=`Estrategista de marketing digital para advogados. Cria conteúdo de alto engajamento respeitando o Código de Ética da OAB. Nunca promete resultados. Linguagem acessível e educativa.`;
+  const prompt=`Crie conteúdo para redes sociais:\n- ÁREA: ${area}\n- FORMATO: ${fmtDescs[formato]||formato}\n- TEMA: ${tema||"tema relevante"}\n- TOM: ${currentTom}\n- PÚBLICO: ${publico||"pessoas físicas em geral"}\n\nAo final inclua: hashtags (15-20), melhor horário para publicar, dica de visual.`;
+  try{const r=await callClaude(sys,prompt,1500);body.innerHTML=`<div class="result-body">${fmt(r)}</div>`;document.getElementById("btnCopyGen").style.display="inline-flex";document.getElementById("btnRegen").style.display="inline-flex";}
+  catch(e){body.innerHTML=`<div style="color:#c0392b;padding:16px">Erro ao gerar. Verifique e tente novamente.</div>`;}
+}
+
+// ROTEIRO
+async function gerarRoteiro(){
+  const area=document.getElementById("rArea").value,tema=document.getElementById("rTema").value,dur=document.getElementById("rDuracao").value,estilo=document.getElementById("rEstilo").value,cta=document.getElementById("rCta").value;
+  const body=document.getElementById("rotBody");
+  document.getElementById("btnCopyRot").style.display="none";
+  loading(body);
+  const sys=`Cria roteiros de vídeo para advogados. Detalhados, com marcação de tempo, texto falado e legendas. Respeita o Código de Ética da OAB.`;
+  const prompt=`Roteiro COMPLETO para Reel:\n- ÁREA: ${area}\n- TEMA: ${tema||"tema jurídico relevante"}\n- DURAÇÃO: ${dur}s\n- ESTILO: ${estilo}\n- CTA: ${cta}\n\nEstrutura:\n🎬 TÍTULO\n⏱ DURAÇÃO\n[00:00] GANCHO...\n[Continue com tempos]\nLEGENDA: ...\n#hashtags`;
+  try{const r=await callClaude(sys,prompt,1500);body.innerHTML=`<div class="result-body">${fmt(r)}</div>`;document.getElementById("btnCopyRot").style.display="inline-flex";}
+  catch(e){body.innerHTML=`<div style="color:#c0392b;padding:16px">Erro ao gerar roteiro.</div>`;}
+}
+
+// MASSA
+async function gerarMassa(){
+  const area=document.getElementById("mArea").value,qtd=document.getElementById("mQtd").value,fmtS=document.getElementById("mFmt").value;
+  const out=document.getElementById("massaOut");
+  loading(out,`Gerando ${qtd} peças de conteúdo...`);
+  const sys=`Especialista em marketing jurídico. Cria lotes de conteúdo para Instagram. Responda SOMENTE com JSON puro, sem markdown, sem backticks.`;
+  const prompt=`Crie exatamente ${qtd} posts de ${fmtS} para advogado de ${area}.\nJSON puro (array): [{"dia":1,"formato":"Feed/Reel/Story","titulo":"...","conteudo":"texto completo 150-300 palavras","hashtags":"#tag1 #tag2","horario":"18h"}]`;
+  try{
+    const r=await callClaude(sys,prompt,2000);
+    let posts;
+    try{posts=JSON.parse(r.replace(/```json|```/g,"").trim());}catch{out.innerHTML=`<div class="card"><div class="result-body">${fmt(r)}</div></div>`;return;}
+    const fc={Feed:"#c9a84c",Reel:"#4a7c9e",Story:"#e74c3c",Carrossel:"#27ae60"};
+    out.innerHTML=`<div style="color:#27ae60;margin-bottom:12px;font-size:13px">✅ ${posts.length} peças geradas</div>`+posts.map(p=>`<div class="post-piece"><div style="display:flex;align-items:center;gap:9px;margin-bottom:9px"><span class="tag" style="color:${fc[p.formato]||'#c9a84c'};background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.2)">${p.formato}</span><span style="font-size:11px;color:#6b6b80">Dia ${p.dia} · ${p.horario}</span></div><div style="font-family:Georgia,serif;font-size:14px;color:#e8e4d9;margin-bottom:8px">${p.titulo}</div><div style="font-size:13px;line-height:1.7;color:#d4d0c8;margin-bottom:8px">${p.conteudo}</div><div style="display:flex;flex-wrap:wrap;gap:5px">${(p.hashtags||"").split(" ").filter(h=>h).map(h=>`<span style="font-size:11px;background:#1a1a26;border:1px solid rgba(201,168,76,.18);border-radius:4px;padding:2px 7px;color:#6fafc8;font-family:monospace">${h}</span>`).join("")}</div></div>`).join("");
+  }catch(e){out.innerHTML=`<div class="card" style="color:#c0392b">Erro ao gerar lote.</div>`;}
+}
+
+// ANALISE
+async function analisarMetricas(){
+  const s=document.getElementById("aS").value,c=document.getElementById("aC").value,e=document.getElementById("aE").value,p=document.getElementById("aP").value,a=document.getElementById("aA").value,area=document.getElementById("aArea").value;
+  const out=document.getElementById("analiseOut");loading(out);
+  const sys=`Estrategista de marketing digital para advocacia. Analisa métricas de redes sociais e gera diagnósticos e planos de ação.`;
+  const prompt=`Analise métricas deste advogado:\n- Seguidores: ${s||"não informado"}\n- Crescimento: ${c||"n/i"}%\n- Engajamento: ${e||"n/i"}%\n- Posts/semana: ${p||"n/i"}\n- Alcance médio: ${a||"n/i"}\n- Área: ${area||"n/i"}\n\n1. 📊 DIAGNÓSTICO (nota 0-10 por métrica com benchmark jurídico)\n2. 🚨 PONTOS CRÍTICOS a corrigir\n3. 💡 OPORTUNIDADES\n4. 📋 PLANO DE AÇÃO 30/60/90 dias\n5. 🎯 TIPOS DE CONTEÚDO que mais convertem`;
+  try{const r=await callClaude(sys,prompt,1500);out.innerHTML=`<div class="card"><div class="result-body">${fmt(r)}</div></div>`;}
+  catch(e){out.innerHTML=`<div class="card" style="color:#c0392b">Erro ao analisar.</div>`;}
+}
+
+// ESTRATEGIA
+async function gerarEstrategia(tipo){
+  const perfil=document.getElementById("ePerfil").value;
+  const out=document.getElementById("estrategiaOut");loading(out);
+  const nomes={crescimento:"Crescimento de Seguidores",engajamento:"Aumento de Engajamento",autoridade:"Posicionamento como Referência",captacao:"Captação de Clientes via Instagram"};
+  const sys=`Estrategista sênior de marketing digital para advogados. Cria estratégias práticas, éticas e focadas em resultado.`;
+  const prompt=`Crie estratégia completa de ${nomes[tipo]} para: ${perfil||"advogado iniciante nas redes"}\n\nInclua: diagnóstico inicial, passo a passo semanal, tipos de conteúdo com exemplos, métricas a acompanhar, erros comuns de advogados, títulos de posts que funcionam, cronograma de implementação.`;
+  try{const r=await callClaude(sys,prompt,1500);out.innerHTML=`<div class="card"><div style="font-family:Georgia,serif;font-size:15px;color:#e8e4d9;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(201,168,76,.2)">${nomes[tipo]}</div><div class="result-body">${fmt(r)}</div></div>`;}
+  catch(e){out.innerHTML=`<div class="card" style="color:#c0392b">Erro ao gerar estratégia.</div>`;}
+}
+
+// PUBLICO
+async function analisarPublico(){
+  const area=document.getElementById("pArea").value,cidade=document.getElementById("pCidade").value;
+  const out=document.getElementById("publicoOut");loading(out);
+  const sys=`Especialista em pesquisa de público-alvo para advogados no Brasil.`;
+  const prompt=`Análise completa de público-alvo para advogado de ${area} em ${cidade||"todo o Brasil"}.\n1. 👤 3 PERSONAS (nome fictício, idade, dores, medos, desejos)\n2. 📱 COMPORTAMENTO DIGITAL (onde estão, o que buscam, quando são ativos)\n3. 🗣 LINGUAGEM E TERMOS usados\n4. 💔 PRINCIPAIS DORES jurídicas\n5. 🎯 COMO ALCANÇAR no Instagram e LinkedIn\n6. 📝 EXEMPLOS DE TÍTULOS que funcionam para cada persona`;
+  try{const r=await callClaude(sys,prompt,1500);out.innerHTML=`<div class="card"><div class="result-body">${fmt(r)}</div></div>`;}
+  catch(e){out.innerHTML=`<div class="card" style="color:#c0392b">Erro ao analisar público.</div>`;}
+}
+
+// CALENDARIO
+async function gerarCalendario(){
+  const area=document.getElementById("cArea").value,periodo=document.getElementById("cPeriodo").value;
+  const out=document.getElementById("calOut");
+  const periodos={semana:"7 dias",quinzena:"15 dias",mes:"30 dias"};
+  loading(out,`Gerando calendário de ${periodos[periodo]}...`);
+  const sys=`Cria calendários editoriais para advogados. Responda SOMENTE com JSON puro, sem markdown, sem backticks.`;
+  const prompt=`Calendário editorial de ${periodos[periodo]} para advogado de ${area}.\nJSON puro (array): [{"dia":1,"diaSemana":"Segunda","formato":"Reel/Feed/Story/Carrossel","tema":"...","titulo":"...","objetivo":"Educar/Engajar/Converter/Relacionamento","horario":"19h"}]`;
+  try{
+    const r=await callClaude(sys,prompt,2000);
+    let cal;
+    try{cal=JSON.parse(r.replace(/```json|```/g,"").trim());}
+    catch{out.innerHTML=`<div class="card"><div class="result-body">${fmt(r)}</div></div>`;return;}
+    const fc={Feed:"#c9a84c",Reel:"#4a7c9e",Story:"#e74c3c",Carrossel:"#27ae60"};
+    const oc={Educar:"#6fafc8",Engajar:"#c9a84c",Converter:"#27ae60",Relacionamento:"#e74c3c"};
+    out.innerHTML=`<div class="card"><div class="card-title">${area} — ${periodos[periodo]} <span class="badge">${cal.length} posts</span></div>`+cal.map(p=>`<div class="cal-row"><div style="font-family:monospace;font-size:11px;color:#6b6b80">Dia ${p.dia}<br/><span style="color:#d4d0c8">${p.diaSemana}</span></div><span class="tag" style="color:${fc[p.formato]||'#c9a84c'};font-size:10px">${p.formato}</span><div><div style="font-size:12.5px;color:#e8e4d9;font-weight:500">${p.titulo}</div><div style="font-size:10px;color:#6b6b80;margin-top:2px">${p.tema}</div></div><div style="font-size:11px;color:${oc[p.objetivo]||'#6b6b80'}">${p.objetivo}</div><div style="font-family:monospace;font-size:11px;color:#6b6b80">${p.horario}</div></div>`).join("")+`</div>`;
+  }catch(e){out.innerHTML=`<div class="card" style="color:#c0392b">Erro ao gerar calendário.</div>`;}
+}
+
+// REDES SOCIAIS
+async function analisarRedes(){
+  const platNames={instagram:"Instagram",facebook:"Facebook",linkedin:"LinkedIn",tiktok:"TikTok",todos:"Instagram, Facebook, LinkedIn e TikTok"};
+  const plat=platNames[currentPlat]||"Instagram";
+  const area=document.getElementById("rsArea").value,seg=document.getElementById("rsSeg").value,eng=document.getElementById("rsEng").value,freq=document.getElementById("rsFreq").value,cont=document.getElementById("rsCont").value,dif=document.getElementById("rsDif").value,desc=document.getElementById("rsDesc").value;
+  const out=document.getElementById("redesOut");loading(out);
+  const sys=`Especialista em marketing digital para advogados em redes sociais. Conhece as restrições do Código de Ética da OAB.`;
+  const prompt=`Análise completa para advogado nas redes:\nPLATAFORMA: ${plat}\nÁREA: ${area}\nSEGUIDORES: ${seg||"não informado"}\nENGAJAMENTO: ${eng||"n/i"}%\nFREQUÊNCIA: ${freq}\nCONTEÚDO ATUAL: ${cont}\nDIFICULDADE: ${dif}\nSITUAÇÃO: ${desc||"não descrita"}\n\n📊 DIAGNÓSTICO POR PLATAFORMA (potencial, audiência, formatos)\n🚀 PLANO DE AÇÃO DETALHADO (estratégia, frequência, tipos de post, horários)\n🎯 COMO ADAPTAR conteúdo para cada rede\n📈 METAS REALISTAS 30/60/90 DIAS\n⚠️ ERROS MAIS COMUNS de advogados em cada rede\n💡 5 IDEIAS IMEDIATAS específicas para ${plat}`;
+  try{const r=await callClaude(sys,prompt,2000);out.innerHTML=`<div class="card"><div class="result-body">${fmt(r)}</div></div>`;}
+  catch(e){out.innerHTML=`<div class="card" style="color:#c0392b">Erro ao analisar.</div>`;}
+}
+
+// TRAFEGO
+async function configurarCampanha(){
+  const platNames={google:"Google Ads",meta:"Meta Ads (Facebook e Instagram)",linkedin:"LinkedIn Ads",tiktok:"TikTok Ads",todas:"Google Ads, Meta Ads, LinkedIn Ads e TikTok Ads"};
+  const plat=platNames[currentTrafPlat]||"Google Ads";
+  const area=document.getElementById("tArea").value,obj=document.getElementById("tObj").value,orc=document.getElementById("tOrc").value,loc=document.getElementById("tLoc").value,pub=document.getElementById("tPub").value,dif=document.getElementById("tDif").value;
+  const tipos=[...tiposAtivos].join(", ");
+  const out=document.getElementById("trafegoOut");loading(out);
+  const sys=`Especialista em tráfego pago para escritórios de advocacia no Brasil. Conhece as restrições da OAB e cria estratégias éticas.`;
+  const prompt=`Configure campanha de tráfego pago:\nPLATAFORMA: ${plat}\nÁREA: ${area}\nOBJETIVO: ${obj}\nORÇAMENTO: R$ ${orc||"a definir"}/mês\nLOCALIZAÇÃO: ${loc||"Brasil"}\nPÚBLICO: ${pub}\nDIFERENCIAL: ${dif||"não informado"}\nTIPOS: ${tipos}\n\n🎯 ESTRUTURA DA CAMPANHA (grupos de anúncios, estratégia de lances)\n🔍 PALAVRAS-CHAVE (20 principais + 10 negativas + estimativa CPC)\n📝 COPY DOS ANÚNCIOS (3 variações com títulos e descrições prontos para subir)\n👥 SEGMENTAÇÃO (dados demográficos, interesses, audiências personalizadas)\n💰 DISTRIBUIÇÃO DO ORÇAMENTO por semana\n📊 MÉTRICAS (KPIs, metas de CPC/CTR/CPA)\n⚠️ RESTRIÇÕES OAB a observar`;
+  try{const r=await callClaude(sys,prompt,2000);out.innerHTML=`<div class="card"><div class="result-body">${fmt(r)}</div></div>`;}
+  catch(e){out.innerHTML=`<div class="card" style="color:#c0392b">Erro ao configurar campanha.</div>`;}
+}
+
+// NOTICIAS
+async function buscarNoticias(){
+  const out=document.getElementById("noticiasOut");
+  loading(out,"Buscando atualizações jurídicas...");
+  const sys=`Jornalista jurídico especializado no Brasil. Cria briefings de notícias, decisões de tribunais (STF, STJ, TST) e mudanças legislativas. Responda SOMENTE com JSON puro, sem markdown, sem backticks.`;
+  const prompt=`Gere 6 notícias/atualizações jurídicas recentes sobre ${currentNewsArea} para advogados brasileiros.\nJSON puro (array): [{"titulo":"Título impactante","data":"Mês Ano","resumo":"3-4 frases sobre o que mudou e impacto prático","fonte":"STF/STJ/TST/Congresso/TRT","impacto":"Alto/Médio/Baixo","ideiasConteudo":"2 sugestões de posts para redes sociais"}]`;
+  try{
+    const r=await callClaude(sys,prompt,2000);
+    let noticias;
+    try{noticias=JSON.parse(r.replace(/```json|```/g,"").trim());}
+    catch{out.innerHTML=`<div class="card"><div class="result-body">${fmt(r)}</div></div>`;return;}
+    const ic={Alto:"#e74c3c",Médio:"#c9a84c",Baixo:"#27ae60"};
+    out.innerHTML=`<div style="color:#27ae60;margin-bottom:14px;font-size:13px">✅ ${noticias.length} atualizações encontradas — ${currentNewsArea}</div>`+noticias.map((n,i)=>`<div class="news-card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px"><span style="font-size:10px;padding:2px 9px;border-radius:4px;background:rgba(201,168,76,.09);color:#c9a84c;border:1px solid rgba(201,168,76,.22)">${n.fonte}</span><div style="display:flex;gap:10px;align-items:center"><span style="font-size:11px;color:${ic[n.impacto]||'#6b6b80'};font-weight:600">● ${n.impacto} impacto</span><span style="font-size:11px;color:#6b6b80;font-family:monospace">${n.data}</span></div></div><div class="news-title">${n.titulo}</div><div class="news-summary">${n.resumo}</div>${n.ideiasConteudo?`<div class="news-idea"><div class="news-idea-label">💡 Ideias de conteúdo</div>${n.ideiasConteudo}</div>`:""}<div style="display:flex;gap:8px;margin-top:11px"><button class="btn-outline" style="font-size:12px" onclick="gerarPostNoticia(${i},'${(n.titulo||'').replace(/'/g,"\\'")}')">✨ Gerar post</button><button class="btn-outline" style="font-size:12px" onclick="navigator.clipboard&&navigator.clipboard.writeText('${(n.resumo||'').replace(/'/g,"\\'").replace(/\n/g,' ')}')">📋 Copiar resumo</button></div><div id="postNoticia${i}"></div></div>`).join("");
+  }catch(e){out.innerHTML=`<div class="card" style="color:#c0392b">Erro ao buscar notícias.</div>`;}
+}
+
+async function gerarPostNoticia(i,titulo){
+  const el=document.getElementById("postNoticia"+i);
+  el.innerHTML=`<div class="loading" style="margin-top:10px"><div class="dots"><span></span><span></span><span></span></div>Gerando post...</div>`;
+  const sys=`Especialista em marketing jurídico. Cria posts para redes sociais baseados em notícias.`;
+  const prompt=`Crie post para Instagram de advogado de ${currentNewsArea} baseado em: "${titulo}"\nInclua: gancho inicial, explicação para leigos, orientação prática, CTA e hashtags.`;
+  try{const r=await callClaude(sys,prompt,1000);el.innerHTML=`<div class="card" style="margin-top:11px;background:#0a0a0f"><div style="font-size:10px;color:#c9a84c;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Post gerado</div><div class="result-body">${fmt(r)}</div></div>`;}
+  catch{el.innerHTML=`<div style="color:#c0392b;font-size:12px;margin-top:8px">Erro ao gerar post.</div>`;}
+}
+</script>
+</body>
+</html>
